@@ -26,10 +26,11 @@ export const Post = ({ post }) => {
   const [open, setOpen] = useState(false);
   const { user } = useSelector((store) => store.auth);
   const {posts} = useSelector(store=>store.post)
+
   const dispatch = useDispatch()
-  // const {selectedPost} = useSelector(store=>store.post)
   const [textDialog, setTextDialog] = useState("");
-  const[liked,setLiked] = useState(post.likes.includes(user._id) || false)
+  const[liked,setLiked] = useState(post.likes?.includes(user?._id) || false)
+  const [isBookmarked, setIsBookmarked] = useState(user.bookmarksId?.includes(post?._id) || false);
   const[postLike,setPostLike] = useState(post.likes.length)
   const[comment,setComment] = useState(post.comments)
   const setClose = () => {
@@ -52,18 +53,8 @@ export const Post = ({ post }) => {
       error();
     }
   };
-
-  const bookmarkHandler = async()=>{
-    const response = await axios.post(`http://localhost:3000/api/post/bookmark/${post._id}`,{},{
-      headers :{
-        "Content-Type" : "application/json",
-      },
-      withCredentials:true
-    })
-    if(response.status == 200){
-       console.log(response.data)
-    }
-  }
+  
+  
 
   const likeOrDislikeHandler = async ()=>{
     const action = liked ? 'dislike' : 'like'
@@ -80,7 +71,7 @@ export const Post = ({ post }) => {
         likes : liked ? p.likes.filter(id=>id !== user._id) : [...p.likes,user._id]
       } : p)
       dispatch(setPosts(updatePostData))
-      console.log(res.data)
+    
     }
   }
 
@@ -125,12 +116,29 @@ export const Post = ({ post }) => {
     }
   }
 
-  const bookmarkHandle = async()=>{
+  const bookmarkHandler = async()=>{
     const response = await axios.post(`http://localhost:3000/api/post/bookmark/${post?._id}`,{},{
       withCredentials : true
     })
+    if (response.status === 200) {
+      // console.log(response.data);
+      setIsBookmarked(!isBookmarked); 
+
+     
+      const updatedPosts = posts.map((p) =>
+        p._id === post._id
+          ? {
+              ...p,
+              bookmarks: isBookmarked
+                ? p.bookmarks.filter((id) => id !== user._id)
+                : [...p.bookmarks, user._id],
+            }
+          : p
+      );
+      dispatch(setPosts(updatedPosts));
+    }
   }
-  console.log(user)
+  // console.log(user)
   return (
     <div className="my-8 w-full max-w-sm mx-auto max-sm:w-full max-sm:ml-20 max-md:ml-40">
       <div className=" flex justify-between">
@@ -166,8 +174,12 @@ export const Post = ({ post }) => {
           <Send className=" cursor-pointer" />
           
         </div>
-        <Bookmark onClick={bookmarkHandler}/>
-        {/* <BookmarkCheck color="green"/> */}
+        {isBookmarked ? (
+          <BookmarkCheck />
+        ) : (
+          <Bookmark onClick={bookmarkHandler} className=" cursor-pointer" />
+        )}
+    
       </div>
       <span className=" font-medium block mb-2">
         {" "}

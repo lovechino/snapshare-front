@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "../Redux/postSlice";
+import { notification } from "antd";
 
 export const readFileAsDataUrl = (file) => {
   return new Promise((resolve) => {
@@ -42,6 +43,29 @@ const CreateNewPost = ({ open, setClose }) => {
     //     "Content-Type": "multipart/form-data",
     //   }
     //  }).catch(err=>console.log(err.data))
+
+    const key = 'updatable';
+    const[api,contextHoler] = notification.useNotification()
+    const OpenNotification = ()=>{
+        setTimeout(()=>{
+            api.open({
+                key,
+                message: 'Login Success',
+                description: "Login"
+            })
+        },1000)
+    }
+
+    const FailNotification = ()=>{
+      setTimeout(()=>{
+          api.open({
+              key,
+              message: 'Login Fail',
+              description: "Check post please"
+          })
+      },1000)
+  }
+
   const createPostHandler = async () => {
     const formData = new FormData()
     formData.append("caption",caption)
@@ -59,8 +83,9 @@ const CreateNewPost = ({ open, setClose }) => {
       setCaption("")
       setPreview("")
       setClose()
+      OpenNotification()
     }else{
-      alert("Error creating post")
+      FailNotification()
     }
   }
   useEffect(() => {
@@ -79,6 +104,7 @@ const CreateNewPost = ({ open, setClose }) => {
         open ? "visible bg-black/20" : "invisible"
       }`}
     >
+      {contextHoler}
       <div
         ref={newPostRef}
         className={`bg-white rounded-xl shadow  p-6 transition-all ${

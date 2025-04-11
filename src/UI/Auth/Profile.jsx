@@ -2,23 +2,26 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import getProfile from "../../hooks/getProfileUser";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Avatar, Badge, Modal } from "antd";
 import { Heart, MessageCircle } from "lucide-react";
 import axios from "axios";
 import CommentDialog from "../../Components/CommentDialog";
+import { setAuthUser, setSelecteduser } from "../../Redux/authSlice";
 
 function Profile() {
   const params = useParams();
   const userId = params.id;
   getProfile(userId);
   const { userProfile } = useSelector((store) => store.auth);
+  const dispatch = useDispatch()
   const { user } = useSelector((store) => store.auth);
-  const isFollow = true;
+  const[isFollowing,setIsFollowing] = useState(user?.following.includes(userId) || false)
   const [tab, setTab] = useState("posts");
   const handleTabChange = (tab) => {
     setTab(tab);
   };
+  console.log(isFollowing)
   const displayPost =
     tab === "posts" ? userProfile?.posts : userProfile?.bookmarks;
   const [openPost, setOpenPost] = useState(false);
@@ -54,6 +57,44 @@ function Profile() {
       addCommentHandle()
     }
   }
+  const HandleFollow = async () => {
+    const shouldFollow = !isFollowing; // Xác định hành động dựa trên trạng thái hiện tại
+  
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/user/florunfl/${userId}`,
+        { action: shouldFollow ? 'follow' : 'unfollow' }, // Gửi hành động đến backend
+        {
+          withCredentials: true
+        }
+      );
+  
+      if (response.status === 200) {
+        setIsFollowing(shouldFollow); // Cập nhật trạng thái sau khi API thành công
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        let updatedFollowing = [...user?.following];
+  
+        if (shouldFollow) {
+          // Thêm userId nếu đang follow và chưa có trong mảng
+          if (!updatedFollowing.includes(userId)) {
+            updatedFollowing = [...updatedFollowing, userId];
+          }
+        } else {
+          // Xóa userId nếu đang unfollow
+          updatedFollowing = updatedFollowing.filter(id => id !== userId);
+        }
+  
+        // dispatch(setAuthUser({ ...user, following: updatedFollowing })); // Dispatch action để cập nhật Redux
+        dispatch(setAuthUser({...user,following : updatedFollowing}))
+      } else {
+        console.error("Failed to follow/unfollow:", response.data);
+        // Xử lý lỗi nếu cần
+      }
+    } catch (error) {
+      console.error("Error during follow/unfollow:", error);
+      // Xử lý lỗi nếu cần
+    }
+  };
   return (
     <div className=" flex max-w-4xl justify-center mx-auto pl-10">
       <div className=" flex flex-col gap-20 p-8">
@@ -72,17 +113,17 @@ function Profile() {
                   >
                     Edit Profile
                   </Link>
-                ) : isFollow ? (
+                ) : isFollowing ? (
                   <div>
-                    <button className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">
+                    <button onClick={HandleFollow} className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">
                       Unfollow
                     </button>
-                    <button className="text-white bg-blue-500 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">
-                      Message
-                    </button>
+                   <Link to = '/chat'  onClick={()=>dispatch(setSelecteduser(userProfile))} className="text-white bg-blue-500 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">
+                    Message
+                   </Link>
                   </div>
                 ) : (
-                  <button className="text-white bg-blue-500 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">
+                  <button onClick={HandleFollow} className="text-white bg-blue-500 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">
                     Follow
                   </button>
                 )}
@@ -147,14 +188,7 @@ function Profile() {
             >
               Saved
             </span>
-            <span
-              className={`"py-3 cursor-pointer ${
-                tab === "tagged" ? "font-bold" : ""
-              }`}
-              onClick={() => handleTabChange("tagged")}
-            >
-              Tagged
-            </span>
+            
           </div>
           <div className=" grid grid-cols-3 gap-1">
             {displayPost?.map((post) => {
@@ -260,7 +294,7 @@ const GetFollowers = ({open,setClose})=>{
          setList(data?.data?.user?.followers)
      }
      fetchList()
-  })
+  },[])
   return(
     <Modal open= {open} onOk={setClose} onCancel={setClose}>
        <div>
@@ -298,7 +332,7 @@ const GetFollowing = ({open,setClose})=>{
          setList(data?.data?.user?.following)
      }
      fetchList()
-  })
+  },[])
   return(
     <Modal open= {open} onOk={setClose} onCancel={setClose}>
        <div>

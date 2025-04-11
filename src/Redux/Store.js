@@ -3,6 +3,7 @@ import authSlice from "./authSlice"
 import postSlice from "./postSlice"
 import socketSlice from "./socketSlice"
 import ntfSlice from "./notificationSlice"
+import messNoti from "./messNoti"
 import chat from "./chatSlice"
 import {persistReducer,FLUSH,REHYDRATE,PAUSE,PERSIST, PURGE,REGISTER } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -20,7 +21,8 @@ const persistConfig = {
     post : postSlice,
     socketio : socketSlice,
     chat : chat,
-    notification : ntfSlice
+    notification : ntfSlice,
+    messNoti : messNoti
   })
 
   const persistedReducer = persistReducer(persistConfig, rootReducer)

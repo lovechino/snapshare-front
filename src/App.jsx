@@ -13,6 +13,7 @@ import { setSocket } from "./Redux/socketSlice"
 import { setOnlineUser } from "./Redux/chatSlice"
 import { setLikeNotification } from "./Redux/notificationSlice"
 import { ProtectedRoutes } from "./hooks/protectedRoutes"
+import { setMessNoti } from "./Redux/messNoti"
 
 const browerRouter = createBrowserRouter([
   {
@@ -67,6 +68,9 @@ function App() {
       })
       socketop.on('notification',(notification)=>{
         dispatch(setLikeNotification(notification))
+      })
+      socketop.on('notiMessage',(notiMessage)=>{
+        dispatch(setMessNoti(notiMessage))
       })
       return()=>{
         socketop.close()

@@ -3,27 +3,48 @@ import React, { useEffect } from "react"
 import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
-import { toast, ToastContainer } from "react-toastify"
+
 import { setAuthUser } from "../../Redux/authSlice"
+import { notification } from "antd"
 // import logo from "/public/logo-search-grid-1x.png"
 export const Login = ()=>{
     const [input,setInput] = useState({
         email :"",
         password:""
     })
+    const key = 'updatable';
+    const[api,contextHoler] = notification.useNotification()
+    const openNotification = ()=>{
+        setTimeout(()=>{
+            api.open({
+                key,
+                message: 'Login Success',
+                description: "Login"
+            })
+        },1000)
+    }
+    const FailNotification = (value)=>{
+        setTimeout(()=>{
+            api.open({
+                key,
+                message: 'Login Fail',
+                description: value
+            })
+        },1000)
+    }
     const{user} = useSelector(store=>store.auth)
     const[loading,setLoading] = useState(false)
     const changeEvent = (e)=>{
         setInput({...input,[e.target.name] : e.target.value})
     }
-    // const notify = ()=> toast("aaaaaaaaaaa")
+ 
+
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const signUpHandler = async(e)=>{
         e.preventDefault()
         try{
-           setLoading(true)
-           const sucessNotify = ()=>toast("Login Sucessful")
+           setLoading(true)   
            const res = await axios.post("http://localhost:3000/api/user/login",input,{
             headers :{
                 "Content-Type" : "application/json"
@@ -33,11 +54,11 @@ export const Login = ()=>{
            if(res.data){
              dispatch(setAuthUser(res.data.user))
              navigate("/")
-             sucessNotify()
+             openNotification()
            }     
+        // eslint-disable-next-line no-unused-vars
         }catch(err){
-           const errNotify = ()=>toast(err)
-           errNotify()
+           FailNotification(err.message)
         }finally{
             setLoading(false)
         }
@@ -47,10 +68,9 @@ export const Login = ()=>{
             navigate("/")
         }
     })
-    
     return (
         <div className=" flex items-center justify-center w-screen h-screen">
-            <ToastContainer/>
+            {contextHoler}
             <form onSubmit={signUpHandler} className="shadow-lg flex flex-col gap-5 p-8 ">
                 <div className="my-4 flex flex-col justify-center items-center">
                     {/* <img className="w-1/2 h-1/2" src={logo}/> */}
@@ -71,9 +91,9 @@ export const Login = ()=>{
                 </div>
                {
                 loading ? (
-                    <button  className="w-full bg-blue-300 px-3 py-2">Please wait</button>
+                    <button  className="w-full bg-blue-300 px-3 py-2 hover:cursor-pointer">Please wait</button>
                 ):(
-                    <button  className="w-full bg-blue-300 px-3 py-2">Login</button>
+                    <button  className="w-full bg-blue-300 px-3 py-2 hover:cursor-pointer">Login</button>
                 )
                }
                 <span className="text-center">Don't have an account? <Link to="/signup" className="text-blue-600">Sign Up</Link></span>

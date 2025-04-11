@@ -22,6 +22,7 @@ const SideBar = () => {
   const navigate = useNavigate();
   const { user } = useSelector((store) => store.auth);
   const { likeNotification } = useSelector((store) => store.notification);
+  const {messNoti} = useSelector((store)=>store.messNoti)
   const [opennew, setNew] = useState(false);
   const[openSearch,setOpenSearch] = useState(false)
   const setCloseSearch = ()=>{
@@ -38,7 +39,7 @@ const SideBar = () => {
       text: "Search",
     },
     {
-      icon: <Badge count = {0}>
+      icon: <Badge count = {messNoti.length}>
         <MessageCircle />
       </Badge>,
       text: "Message",
