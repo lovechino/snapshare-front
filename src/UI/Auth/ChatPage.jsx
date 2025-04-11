@@ -44,8 +44,12 @@ const ChatPage = () => {
      dispatch(setReadMess(updateData));
   };
   useEffect(() => {
-    dispatch(setSelecteduser(null));
-  }, []);
+    if (!selectedUser) {
+      dispatch(setSelecteduser(null));
+    }
+    return () => {
+    };
+  }, [dispatch, selectedUser /* Thêm các dependency khác nếu cần */]);
   return (
     <div className=" flex ml-[16%] h-screen">
       <section className=" w-full md:w-1/4 my-8 max-md:w-1/5 ">

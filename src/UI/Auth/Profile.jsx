@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import getProfile from "../../hooks/getProfileUser";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +15,7 @@ function Profile() {
   getProfile(userId);
   const { userProfile } = useSelector((store) => store.auth);
   const dispatch = useDispatch()
-  const { user } = useSelector((store) => store.auth);
+  const { user,selectedUser } = useSelector((store) => store.auth);
   const[isFollowing,setIsFollowing] = useState(user?.following.includes(userId) || false)
   const [tab, setTab] = useState("posts");
   const handleTabChange = (tab) => {
@@ -95,6 +95,12 @@ function Profile() {
       // Xử lý lỗi nếu cần
     }
   };
+  const navigate = useNavigate()
+  const handleMessageClick = () => {
+    dispatch(setSelecteduser(userProfile));
+    navigate('/chat');
+  };
+  console.log(selectedUser)
   return (
     <div className=" flex max-w-4xl justify-center mx-auto pl-10">
       <div className=" flex flex-col gap-20 p-8">
@@ -118,9 +124,9 @@ function Profile() {
                     <button onClick={HandleFollow} className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">
                       Unfollow
                     </button>
-                   <Link to = '/chat'  onClick={()=>dispatch(setSelecteduser(userProfile))} className="text-white bg-blue-500 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">
-                    Message
-                   </Link>
+                    <button onClick={handleMessageClick} className="text-white bg-blue-500 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">
+                      Message
+                    </button>
                   </div>
                 ) : (
                   <button onClick={HandleFollow} className="text-white bg-blue-500 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">
