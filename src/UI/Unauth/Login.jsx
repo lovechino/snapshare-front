@@ -49,7 +49,7 @@ export const Login = ()=>{
             headers :{
                 "Content-Type" : "application/json"
             },
-            withCredentials : true
+            // withCredentials : true
            })
            if(res.data){
              dispatch(setAuthUser(res.data.user))
