@@ -49,12 +49,15 @@ export const Login = ()=>{
             headers :{
                 "Content-Type" : "application/json"
             },
-            // withCredentials : true
+            withCredentials : true
            })
            if(res.data){
              dispatch(setAuthUser(res.data.user))
-             navigate("/")
              openNotification()
+             setTimeout(() => {
+                navigate("/");
+            }, 200);
+             
            }     
         // eslint-disable-next-line no-unused-vars
         }catch(err){
