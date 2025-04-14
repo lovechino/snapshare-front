@@ -8,9 +8,11 @@ import { Heart, MessageCircle } from "lucide-react";
 import axios from "axios";
 import CommentDialog from "../../Components/CommentDialog";
 import { setAuthUser, setSelecteduser } from "../../Redux/authSlice";
+import GetCmtOnePost from "../../Components/GetCmtOnePost";
 
 function Profile() {
   const params = useParams();
+  const navigate = useNavigate()
   const userId = params.id;
   getProfile(userId);
   const { userProfile } = useSelector((store) => store.auth);
@@ -41,7 +43,7 @@ function Profile() {
   const[textDialog,setTextDialog] = useState("")
   const addCommentHandle = async ()=>{
     if(textDialog.trim()){
-       await axios.post(`http://localhost:3000/api/post/comment/${value?._id}`,{
+       await axios.post(`https://snapshare-back-2.onrender.com/api/post/comment/${value?._id}`,{
         text : textDialog
        },{
         headers:{
@@ -62,12 +64,12 @@ function Profile() {
   
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/user/florunfl/${userId}`,
+        `https://snapshare-back-2.onrender.com/api/user/florunfl/${userId}`,
         { action: shouldFollow ? 'follow' : 'unfollow' }, // Gửi hành động đến backend
         {
           withCredentials: true
         }
-      );
+      )
   
       if (response.status === 200) {
         setIsFollowing(shouldFollow); // Cập nhật trạng thái sau khi API thành công
@@ -95,7 +97,6 @@ function Profile() {
       // Xử lý lỗi nếu cần
     }
   };
-  const navigate = useNavigate()
   const handleMessageClick = () => {
     dispatch(setSelecteduser(userProfile));
     navigate('/chat');
@@ -285,6 +286,7 @@ function Profile() {
 
 const GetFollowers = ({open,setClose})=>{
   const[list,setList] = useState()
+  
   const params = useParams();
   const userId = params.id;
   useEffect(()=>{
@@ -322,6 +324,7 @@ const GetFollowers = ({open,setClose})=>{
 }
 
 const GetFollowing = ({open,setClose})=>{
+ 
   const[list,setList] = useState()
   const params = useParams();
   const userId = params.id;
@@ -359,33 +362,5 @@ const GetFollowing = ({open,setClose})=>{
   )
 }
 
-export const GetCmtOnePost = ({postId})=>{
-   const[list,setList] = useState()
-   useEffect(()=>{
-    const fetchList = async ()=>{
-        const response = await axios.post(`http://localhost:3000/api/post/comment/all/${postId}`,{},{
-          headers :{
-            "Content-Type" : "application/json",
-          },
-          withCredentials : true
-        })
-        setList(response?.data?.comments)
-    }
-    fetchList()
-   })
-   return(
-    <div>{list?.map((comment)=>{
-      return(
-        <div className=" flex items-center mt-2">
-           <Avatar src = {comment?.author?.profilePicture}/>
-           <div className=" flex flex-col items-center ml-2 mb-2">
-             <span className=" text-gray-500">{comment?.author?.username}</span>
-             <span>{comment?.text}</span>
-           </div>
-        </div>
-      )
-    })}</div>
-   )
-}
 
 export default Profile;

@@ -15,7 +15,7 @@ export const SignUp = ()=>{
     const[api,contextHoler] = notification.useNotification()
     const{user} = useSelector(store=>store.auth)
     const navigate = useNavigate()
-    const[loading,setLoading] = useState(false)
+    
     const changeEvent = (e)=>{
         setInput({...input,[e.target.name] : e.target.value})
     }
@@ -41,9 +41,7 @@ export const SignUp = ()=>{
     const signUpHandler = async(e)=>{
         e.preventDefault()
         try{
-           setLoading(true)
-
-           const res = await axios.post("http://localhost:3000/api/user/register",input,{
+           const res = await axios.post("https://snapshare-back-2.onrender.com/api/user/register",input,{
             headers :{
                 "Content-Type" : "application/json"
             },
@@ -55,8 +53,6 @@ export const SignUp = ()=>{
            }
         }catch(err){
             FailNotification(err.message) 
-        }finally{
-            setLoading(false)
         }
     }
     useEffect(()=>{

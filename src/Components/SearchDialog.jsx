@@ -44,7 +44,7 @@ const ResultView = ()=>{
     useEffect(()=>{
         const getResult = async()=>{
            if(username){
-            const response = await axios.post("http://localhost:3000/api/user/search",{
+            const response = await axios.post("https://snapshare-back-2.onrender.com/api/user/search",{
               username : username
             },{
               headers:{

@@ -7,15 +7,15 @@ import { useNavigate } from "react-router-dom";
 import { setAuthUser } from "../Redux/authSlice";
 
 
-const readFileAsDataUrl = (file) => {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (typeof reader.result === "string") resolve(reader.result);
-    };
-    reader.readAsDataURL(file);
-  });
-};
+// const readFileAsDataUrl = (file) => {
+//   return new Promise((resolve) => {
+//     const reader = new FileReader();
+//     reader.onloadend = () => {
+//       if (typeof reader.result === "string") resolve(reader.result);
+//     };
+//     reader.readAsDataURL(file);
+//   });
+// };
 
 const EditProfile = () => {
   const { user } = useSelector((store) => store.auth);
@@ -41,11 +41,16 @@ const EditProfile = () => {
     // if(profilePicture){
     //   formData.append("profilePicture",profilePicture)
     // }
-    const response = await axios.post(`http://localhost:3000/api/user/profile/edit`,{bio,gender,profilePicture},{
+    
+    const response = await axios.post(`https://snapshare-back-2.onrender.com/api/user/profile/edit`,{bio,gender,profilePicture},{
       headers:{
         "Content-Type": "multipart/form-data"
       },
       withCredentials : true
+    }).catch(error=>{
+      if(error.response && error.response.status === 401){
+         navigate("/login")
+      }
     })
     if(response.status == 200){
        const updateUser = {

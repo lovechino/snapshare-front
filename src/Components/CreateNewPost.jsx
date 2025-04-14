@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "../Redux/postSlice";
 import { notification } from "antd";
+import { useNavigate } from "react-router-dom";
 
 export const readFileAsDataUrl = (file) => {
   return new Promise((resolve) => {
@@ -60,23 +61,28 @@ const CreateNewPost = ({ open, setClose }) => {
       setTimeout(()=>{
           api.open({
               key,
-              message: 'Login Fail',
-              description: "Check post please"
+              message: 'Authentication',
+              description: "Login Again Please"
           })
       },1000)
   }
-
+  const navigate = useNavigate()
   const createPostHandler = async () => {
     const formData = new FormData()
     formData.append("caption",caption)
     formData.append("img",file)
-     const res = await axios.post("http://localhost:3000/api/post/addpost",formData,{
+     const res = await axios.post("https://snapshare-back-2.onrender.com/api/post/addpost",formData,{
       headers: {
         "Content-Type": "multipart/form-data",
       }
       ,
       withCredentials : true
-     }).catch(err=>console.log(err.data))
+     }).catch(err=>{
+      if(err.response && err.response.status === 401){
+        FailNotification()
+        navigate("/login")
+      }
+     })
     if(res.status == 200){
       dispatch(setPosts([res.data.post,...posts]))
       alert("Post created successfully")
@@ -87,6 +93,7 @@ const CreateNewPost = ({ open, setClose }) => {
     }else{
       FailNotification()
     }
+    
   }
   useEffect(() => {
     if (open) {

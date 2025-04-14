@@ -9,15 +9,17 @@ import {
   PlusSquare,
   Search,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { lazy, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setAuthUser } from "../Redux/authSlice";
-import CreateNewPost from "./CreateNewPost";
+
 import { setPosts } from "../Redux/postSlice";
 import { Popover } from "antd";
-import SearchView from "./SearchDialog";
 
+
+const SearchView = lazy(()=>import("./SearchDialog"))
+const CreateNewPost = lazy(()=>import("./CreateNewPost"))
 const SideBar = () => {
   const navigate = useNavigate();
   const { user } = useSelector((store) => store.auth);

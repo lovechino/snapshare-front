@@ -1,14 +1,15 @@
 import { Avatar } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link} from "react-router-dom";
 import avatarDefault from "../assets/img_avatar.png"
 import axios from "axios";
 import { setSuggestUsers } from "../Redux/authSlice";
 export const SuggestUser = () => {
   const { suggestedUsers } = useSelector((store) => store.auth);
   const dispatch = useDispatch()
+ 
   const handleFollow = async (id)=>{
-     const response = await axios.post(`http://localhost:3000/api/user/florunfl/${id}`,{},
+     const response = await axios.post(`https://snapshare-back-2.onrender.com/api/user/florunfl/${id}`,{},
       {
         headers: {
           'Content-Type': 'application/json',

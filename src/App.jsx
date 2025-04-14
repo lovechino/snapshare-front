@@ -14,6 +14,8 @@ import { setOnlineUser } from "./Redux/chatSlice"
 import { setLikeNotification } from "./Redux/notificationSlice"
 import { ProtectedRoutes } from "./hooks/protectedRoutes"
 import { setMessNoti } from "./Redux/messNoti"
+import ResetPassword from "./UI/Unauth/ResetPassword"
+import ChangePassword from "./UI/Unauth/ChangePassword"
 
 const browerRouter = createBrowserRouter([
   {
@@ -46,6 +48,14 @@ const browerRouter = createBrowserRouter([
   {
     path:'/signup',
     element : <SignUp/>
+  },
+  {
+    path:'/reset-password',
+    element : <ResetPassword/>
+  },
+  {
+    path:'/change-password/:id',
+    element : <ChangePassword/>
   }
 ])
 
@@ -55,7 +65,7 @@ function App() {
   const dispatch = useDispatch()
   useEffect(()=>{
     if(user){
-      const socketop = io('http://localhost:3000',{
+      const socketop = io('https://snapshare-back-2.onrender.com',{
         query:{
           userId : user?._id 
         },

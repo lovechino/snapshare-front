@@ -12,21 +12,23 @@ import {
   Send,
 } from "lucide-react";
 import CommentDialog from "./CommentDialog";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { lazy, Suspense, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { setPosts, setSelectedPost } from "../Redux/postSlice";
 import CommentView from "./Comment";
-import { GetCmtOnePost } from "../UI/Auth/Profile";
+import { FaSpinner } from "react-icons/fa";
 
+const CmtComponent = lazy(()=>import("./CommentDialog"))
+const CmtOnePost = lazy(()=>import("./GetCmtOnePost"))
 export const Post = ({ post }) => {
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
   const { user } = useSelector((store) => store.auth);
   const {posts} = useSelector(store=>store.post)
-
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const [textDialog, setTextDialog] = useState("");
   const[liked,setLiked] = useState(post.likes?.includes(user?._id) || false)
@@ -38,11 +40,16 @@ export const Post = ({ post }) => {
   };
   const deletePostHandler = async () => {
     const res = await axios.delete(
-      `http://localhost:3000/api/post/delete/${post._id}`,
+      `https://snapshare-back-2.onrender.com/api/post/delete/${post._id}`,
       {
         withCredentials: true,
       }
-    );
+    ).catch(error=>{
+      if(error.response && error.response.status === 401){
+         navigate("/login")
+      }
+    })
+    ;
     if (res.status == 200) {
       const updatePostData = posts.filter((postItem)=>postItem._id !== post._id)
       dispatch(setPosts(updatePostData))
@@ -58,8 +65,12 @@ export const Post = ({ post }) => {
 
   const likeOrDislikeHandler = async ()=>{
     const action = liked ? 'dislike' : 'like'
-    const res = await axios.get(`http://localhost:3000/api/post/${action}/${post._id}`,{
+    const res = await axios.get(`https://snapshare-back-2.onrender.com/api/post/${action}/${post._id}`,{
       withCredentials : true
+    }).catch(error=>{
+      if(error.response && error.response.status === 401){
+         navigate("/login")
+      }
     })
     if(res.status == 200){
       const updateLikes = liked ? postLike -1 : postLike + 1
@@ -78,11 +89,15 @@ export const Post = ({ post }) => {
 
   //comment
   const handleaddComment = async()=>{
-    const response = await axios.post(`http://localhost:3000/api/post/comment/${post._id}`,{text},{
+    const response = await axios.post(`https://snapshare-back-2.onrender.com/api/post/comment/${post._id}`,{text},{
       headers :{
         'Content-Type' : 'application/json',
       },
       withCredentials : true
+    }).catch(error=>{
+      if(error.response && error.response.status === 401){
+         navigate("/login")
+      }
     })
     if(response.status == 200){
       const updateCmtPost = [...comment,response.data.comment]
@@ -97,13 +112,17 @@ export const Post = ({ post }) => {
   }
 
   const handleCmtDialog = async()=>{
-    const response = await axios.post(`http://localhost:3000/api/post/comment/${post._id}`,{
+    const response = await axios.post(`https://snapshare-back-2.onrender.com/api/post/comment/${post._id}`,{
        text : textDialog
     },{
       headers :{
         'Content-Type' : 'application/json',
       },
       withCredentials : true
+    }).catch(error=>{
+      if(error.response && error.response.status === 401){
+         navigate("/login")
+      }
     })
     if(response.status == 200){
       const updateCmtPost = [...comment,response.data.comment]
@@ -117,8 +136,12 @@ export const Post = ({ post }) => {
   }
 
   const bookmarkHandler = async()=>{
-    const response = await axios.post(`http://localhost:3000/api/post/bookmark/${post?._id}`,{},{
+    const response = await axios.post(`https://snapshare-back-2.onrender.com/api/post/bookmark/${post?._id}`,{},{
       withCredentials : true
+    }).catch(error=>{
+      if(error.response && error.response.status === 401){
+         navigate("/login")
+      }
     })
     if (response.status === 200) {
       // console.log(response.data);
@@ -190,7 +213,13 @@ export const Post = ({ post }) => {
         {post.caption}
       </p>
       <span onClick={() => setOpen(!open)}>View All {comment.length} Comments</span>
-      <CommentDialog open={open} setClose={setClose}>
+  
+    <Suspense fallback = {
+       <div className=' flex items-center justify-center h-32'>
+          <FaSpinner className=' animate-spin text-4xl text-blue-500'/>
+        </div>
+    }>
+    <CmtComponent open={open} setClose={setClose}> --
         <div className=" flex flex-1">
           <div className="w-1/2">
             <img
@@ -220,7 +249,7 @@ export const Post = ({ post }) => {
               {/* {
                 comment.map((item)=> <CommentView key={item._id} comment={item}/>)
               } */}
-              <GetCmtOnePost postId={post?._id}/>
+              <CmtOnePost postId={post?._id}/>
             </div>
             <div className="p-4">
               <div className=" flex items-center gap-2">
@@ -242,7 +271,9 @@ export const Post = ({ post }) => {
             </div>
           </div>
         </div>
-      </CommentDialog>
+      </CmtComponent>
+    </Suspense>
+   
       <div className=" flex items-center justify-between">
         <input
           type="text"

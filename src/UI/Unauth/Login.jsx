@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom"
 
 import { setAuthUser } from "../../Redux/authSlice"
 import { notification } from "antd"
-// import logo from "/public/logo-search-grid-1x.png"
+
 export const Login = ()=>{
     const [input,setInput] = useState({
         email :"",
@@ -45,7 +45,7 @@ export const Login = ()=>{
         e.preventDefault()
         try{
            setLoading(true)   
-           const res = await axios.post("http://localhost:3000/api/user/login",input,{
+           const res = await axios.post("https://snapshare-back-2.onrender.com/api/user/login",input,{
             headers :{
                 "Content-Type" : "application/json"
             },
