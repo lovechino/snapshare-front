@@ -2,7 +2,7 @@ import { Avatar } from "antd"
 import axios from "axios"
 import { useEffect, useState } from "react"
 
-
+const token = localStorage.getItem("Token")
 const GetCmtOnePost = ({postId})=>{
      const[list,setList] = useState()
      useEffect(()=>{
@@ -10,6 +10,7 @@ const GetCmtOnePost = ({postId})=>{
           const response = await axios.post(`https://snapshare-back-2.onrender.com/api/post/comment/all/${postId}`,{},{
             headers :{
               "Content-Type" : "application/json",
+               Authorization: `Bearer ${token}`
             },
             withCredentials : true
           })

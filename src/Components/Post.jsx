@@ -21,6 +21,8 @@ import { setPosts, setSelectedPost } from "../Redux/postSlice";
 import CommentView from "./Comment";
 import { FaSpinner } from "react-icons/fa";
 
+
+const token = localStorage.getItem("Token")
 const CmtComponent = lazy(()=>import("./CommentDialog"))
 const CmtOnePost = lazy(()=>import("./GetCmtOnePost"))
 export const Post = ({ post }) => {
@@ -42,6 +44,9 @@ export const Post = ({ post }) => {
     const res = await axios.delete(
       `https://snapshare-back-2.onrender.com/api/post/delete/${post._id}`,
       {
+        headers:{
+          Authorization: `Bearer ${token}`
+        },
         withCredentials: true,
       }
     ).catch(error=>{
@@ -66,6 +71,9 @@ export const Post = ({ post }) => {
   const likeOrDislikeHandler = async ()=>{
     const action = liked ? 'dislike' : 'like'
     const res = await axios.get(`https://snapshare-back-2.onrender.com/api/post/${action}/${post._id}`,{
+      headers:{
+        Authorization: `Bearer ${token}`
+      },
       withCredentials : true
     }).catch(error=>{
       if(error.response && error.response.status === 401){
@@ -92,6 +100,7 @@ export const Post = ({ post }) => {
     const response = await axios.post(`https://snapshare-back-2.onrender.com/api/post/comment/${post._id}`,{text},{
       headers :{
         'Content-Type' : 'application/json',
+         Authorization: `Bearer ${token}`
       },
       withCredentials : true
     }).catch(error=>{
@@ -117,6 +126,7 @@ export const Post = ({ post }) => {
     },{
       headers :{
         'Content-Type' : 'application/json',
+         Authorization: `Bearer ${token}`
       },
       withCredentials : true
     }).catch(error=>{
@@ -137,6 +147,9 @@ export const Post = ({ post }) => {
 
   const bookmarkHandler = async()=>{
     const response = await axios.post(`https://snapshare-back-2.onrender.com/api/post/bookmark/${post?._id}`,{},{
+      headers:{
+        Authorization: `Bearer ${token}`
+      },
       withCredentials : true
     }).catch(error=>{
       if(error.response && error.response.status === 401){

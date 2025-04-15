@@ -4,6 +4,8 @@ import { Link} from "react-router-dom";
 import avatarDefault from "../assets/img_avatar.png"
 import axios from "axios";
 import { setSuggestUsers } from "../Redux/authSlice";
+
+const token = localStorage.getItem("Token")
 export const SuggestUser = () => {
   const { suggestedUsers } = useSelector((store) => store.auth);
   const dispatch = useDispatch()
@@ -13,6 +15,7 @@ export const SuggestUser = () => {
       {
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
         },
         withCredentials : true
       }

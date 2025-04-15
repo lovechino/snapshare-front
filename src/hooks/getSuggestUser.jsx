@@ -8,11 +8,14 @@ const getSuggestUser = ()=>{
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const dispatch = useDispatch()
     // eslint-disable-next-line react-hooks/rules-of-hooks
-   
+    const token = localStorage.getItem("Token")
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(()=>{
         const fetchSuggestUser = async ()=>{
             const response = await axios.get('https://snapshare-back-2.onrender.com/api/user/suggested',{
+                headers:{
+                    Authorization: `Bearer ${token}`
+                },
                 withCredentials : true
             })
             if(response.status == 200){

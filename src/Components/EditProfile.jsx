@@ -16,7 +16,7 @@ import { setAuthUser } from "../Redux/authSlice";
 //     reader.readAsDataURL(file);
 //   });
 // };
-
+const token = localStorage.getItem("Token")
 const EditProfile = () => {
   const { user } = useSelector((store) => store.auth);
   const imageRef = useRef()
@@ -44,7 +44,8 @@ const EditProfile = () => {
     
     const response = await axios.post(`https://snapshare-back-2.onrender.com/api/user/profile/edit`,{bio,gender,profilePicture},{
       headers:{
-        "Content-Type": "multipart/form-data"
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`
       },
       withCredentials : true
     }).catch(error=>{

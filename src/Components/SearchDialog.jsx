@@ -3,6 +3,9 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import avatarDefault from "../assets/img_avatar.png"
 
+
+const token = localStorage.getItem("Token")
+
 const SearchView = ({ open, setClose }) => {
   const searchRef = useRef(null);
   const handleClickOutSide = (e) => {
@@ -49,6 +52,7 @@ const ResultView = ()=>{
             },{
               headers:{
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
               },
               withCredentials : true
             })

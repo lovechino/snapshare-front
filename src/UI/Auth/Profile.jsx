@@ -10,6 +10,9 @@ import CommentDialog from "../../Components/CommentDialog";
 import { setAuthUser, setSelecteduser } from "../../Redux/authSlice";
 import GetCmtOnePost from "../../Components/GetCmtOnePost";
 
+
+const token = localStorage.getItem("Token")
+
 function Profile() {
   const params = useParams();
   const navigate = useNavigate()
@@ -48,6 +51,7 @@ function Profile() {
        },{
         headers:{
           "Content-Type": "application/json",
+           Authorization: `Bearer ${token}`
         },
         withCredentials : true
        })
@@ -67,6 +71,9 @@ function Profile() {
         `https://snapshare-back-2.onrender.com/api/user/florunfl/${userId}`,
         { action: shouldFollow ? 'follow' : 'unfollow' }, // Gửi hành động đến backend
         {
+          headers:{
+            Authorization: `Bearer ${token}`
+          }, 
           withCredentials: true
         }
       )
@@ -296,6 +303,7 @@ const GetFollowers = ({open,setClose})=>{
          },{
           headers :{
             "Content-Type" : "application/json",
+             Authorization: `Bearer ${token}`
           },
           withCredentials : true
          })
@@ -335,6 +343,7 @@ const GetFollowing = ({open,setClose})=>{
          },{
           headers :{
             "Content-Type" : "application/json",
+             Authorization: `Bearer ${token}`
           },
           withCredentials : true
          })

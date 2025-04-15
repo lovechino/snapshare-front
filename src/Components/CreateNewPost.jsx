@@ -15,7 +15,7 @@ export const readFileAsDataUrl = (file) => {
     reader.readAsDataURL(file);
   });
 };
-
+const token = localStorage.getItem("Token")
 const CreateNewPost = ({ open, setClose }) => {
   const imgRef = useRef();
   // const{user} = useSelector(store=>store.auth)
@@ -74,6 +74,7 @@ const CreateNewPost = ({ open, setClose }) => {
      const res = await axios.post("https://snapshare-back-2.onrender.com/api/post/addpost",formData,{
       headers: {
         "Content-Type": "multipart/form-data",
+         Authorization: `Bearer ${token}`
       }
       ,
       withCredentials : true

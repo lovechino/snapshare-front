@@ -67,6 +67,7 @@ const SideBar = () => {
   const logOut = async () => {
     dispatch(setAuthUser(null));
     dispatch(setPosts([]));
+    localStorage.removeItem("Token")
     navigate("/login");
   };
   const setCloseNew = () => {

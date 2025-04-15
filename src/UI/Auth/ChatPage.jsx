@@ -11,6 +11,8 @@ import {  setReadMess } from "../../Redux/messNoti";
 import { readFileAsDataUrl } from "../../Components/CreateNewPost";
 import { GiTalk } from "react-icons/gi";
 
+
+const token = localStorage.getItem("Token")
 const ChatPage = () => {
   const { user, selectedUser, mutualUser } = useSelector((store) => store.auth);
   const { messNoti } = useSelector((store) => store.messNoti);
@@ -86,9 +88,11 @@ const ChatPage = () => {
       payload.append("message", textMessage);
       payload.append("image", file); 
       headers["Content-Type"] = "multipart/form-data";
+      headers["Authorization"] = `Bearer ${token}`
     } else {
       payload = { message: textMessage };
       headers["Content-Type"] = "application/json";
+      headers["Authorization"] = `Bearer ${token}`
     }
   
     try {
