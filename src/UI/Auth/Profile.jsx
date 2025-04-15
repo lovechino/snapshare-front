@@ -298,7 +298,7 @@ const GetFollowers = ({open,setClose})=>{
   const userId = params.id;
   useEffect(()=>{
      const fetchList = async ()=>{
-         const data = await axios.post(`http://localhost:3000/api/user/action/${userId}`,{
+         const data = await axios.post(`https://snapshare-back-2.onrender.com/api/user/action/${userId}`,{
            action :"followers"
          },{
           headers :{
@@ -338,7 +338,7 @@ const GetFollowing = ({open,setClose})=>{
   const userId = params.id;
   useEffect(()=>{
      const fetchList = async ()=>{
-         const data = await axios.post(`http://localhost:3000/api/user/action/${userId}`,{
+         const data = await axios.post(`https://snapshare-back-2.onrender.com/api/user/action/${userId}`,{
            action :"following"
          },{
           headers :{
