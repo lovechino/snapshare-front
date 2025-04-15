@@ -11,9 +11,10 @@ import { setAuthUser, setSelecteduser } from "../../Redux/authSlice";
 import GetCmtOnePost from "../../Components/GetCmtOnePost";
 
 
-const token = localStorage.getItem("Token")
+
 
 function Profile() {
+  const token = localStorage.getItem("Token")
   const params = useParams();
   const navigate = useNavigate()
   const userId = params.id;
@@ -292,6 +293,7 @@ function Profile() {
 }
 
 const GetFollowers = ({open,setClose})=>{
+  const token = localStorage.getItem("Token")
   const[list,setList] = useState()
   
   const params = useParams();
@@ -332,7 +334,7 @@ const GetFollowers = ({open,setClose})=>{
 }
 
 const GetFollowing = ({open,setClose})=>{
- 
+  const token = localStorage.getItem("Token")
   const[list,setList] = useState()
   const params = useParams();
   const userId = params.id;
