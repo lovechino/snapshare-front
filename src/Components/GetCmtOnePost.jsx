@@ -2,8 +2,9 @@ import { Avatar } from "antd"
 import axios from "axios"
 import { useEffect, useState } from "react"
 
-const token = localStorage.getItem("Token")
+
 const GetCmtOnePost = ({postId})=>{
+     const token = localStorage.getItem("Token")
      const[list,setList] = useState()
      useEffect(()=>{
       const fetchList = async ()=>{
