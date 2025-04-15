@@ -53,6 +53,7 @@ export const Login = ()=>{
            })
            if(res.data){
              dispatch(setAuthUser(res.data.user))
+             localStorage.setItem("Token",res.data.token)
              openNotification()
              setTimeout(() => {
                 navigate("/");
