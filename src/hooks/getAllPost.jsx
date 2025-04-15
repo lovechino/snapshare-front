@@ -17,7 +17,7 @@ const getAllPost = ()=>{
                     headers:{
                         Authorization: `Bearer ${token}`
                     },
-                    withCredentials : true
+                    // withCredentials : true
                 })
                 if(response.status == 200){
                     dispatch(setPosts(response.data.posts))

@@ -10,7 +10,7 @@ const GetCmtOnePost = ({postId})=>{
           const response = await axios.post(`https://snapshare-back-2.onrender.com/api/post/comment/all/${postId}`,{},{
             headers :{
               "Content-Type" : "application/json",
-               Authorization: `Bearer ${token}`
+               Authorization: `Bearer ${token}`,
             },
             withCredentials : true
           })
